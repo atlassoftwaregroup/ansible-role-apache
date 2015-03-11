@@ -1,0 +1,53 @@
+---
+# tasks file for apache
+- name: Add repository to install last Apache version
+  apt_repository:
+    repo="{{ apache_repository }}"
+    update_cache=yes
+  when: apache_repository != false
+- name: Install packages.
+  apt:
+    pkg="{{ item }}"
+    state=present
+  with_items: apache_install
+  when: apache_install != false
+- name: Add apache vhosts configurations
+  template:
+    src=vhost.conf.j2
+    dest=/etc/apache2/sites-available/{{ item.servername }}.conf
+    owner=root group=root mode=644
+  notify: Restart apache
+  with_items: apache_vhosts
+  when: apache_vhosts != false
+- name: Disable apache module
+  shell:
+    a2dismod {{ item }}
+  register: apache_cmd
+  changed_when: apache_cmd.stdout.endswith(' already disabled') == false
+  notify: Restart apache
+  with_items: apache_module_disable
+  when: apache_module_disable != false
+- name: Enable apache module
+  shell:
+    a2enmod {{ item }}
+  register: apache_cmd
+  changed_when: apache_cmd.stdout.endswith(' already enabled') == false
+  notify: Restart apache
+  with_items: apache_module_enable
+  when: apache_module_enable != false
+- name: Disable apache site
+  shell:
+    a2dissite {{ item }}
+  register: apache_cmd
+  changed_when: apache_cmd.stdout.endswith(' already disabled') == false
+  notify: Restart apache
+  with_items: apache_site_disable
+  when: apache_site_disable != false
+- name: Enable apache site
+  shell:
+    a2ensite {{ item }}
+  register: apache_cmd
+  changed_when: apache_cmd.stdout.endswith(' already enabled') == false
+  notify: Restart apache
+  with_items: apache_site_enable
+  when: apache_site_enable != false
