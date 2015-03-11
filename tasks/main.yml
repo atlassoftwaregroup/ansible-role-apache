@@ -1,10 +1,5 @@
 ---
 # tasks file for apache
-- name: Add repository to install last Apache version
-  apt_repository:
-    repo="{{ apache_repository }}"
-    update_cache=yes
-  when: apache_repository != false
 - name: Install packages.
   apt:
     pkg="{{ item }}"

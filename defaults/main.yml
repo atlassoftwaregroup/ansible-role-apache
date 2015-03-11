@@ -1,10 +1,7 @@
 ---
 # defaults file for apache
-apache_repository: ppa:ptn107/apache
-
 apache_install:
   - apache2
-
 apache_module_disable: false
 apache_module_enable:
   - rewrite
