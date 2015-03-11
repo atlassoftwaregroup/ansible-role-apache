@@ -9,7 +9,7 @@
 - name: Add apache vhosts configurations
   template:
     src=vhost.conf.j2
-    dest=/etc/apache2/sites-available/{{ item.servername }}.conf
+    dest=/etc/apache2/sites-available/{{ item }}.conf
     owner=root group=root mode=644
   notify: Restart apache
   with_items: apache_sites.keys()
