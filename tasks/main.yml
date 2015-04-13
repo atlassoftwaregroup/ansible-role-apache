@@ -1,6 +1,6 @@
 ---
 # tasks file for apache
-- name: Install packages.
+- name: Install packages
   apt:
     pkg="{{ item }}"
     state=present
